@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@amin.com',
             'password' => Hash::make('password'),
+            'role' => 1,
         ]);
 
         Comment::factory(30)->create();

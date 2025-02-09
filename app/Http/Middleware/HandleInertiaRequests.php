@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -42,6 +43,16 @@ class HandleInertiaRequests extends Middleware
                     'success' => $request->session()->get('success'),
                     'error' => $request->session()->get('error'),
                 ];
+            },
+
+            'authUser' => function() {
+                $user = auth()->user();
+                return $user ? [
+                    'hasRole' => [
+                        'admin' => $user->hasRole(User::USER_ADMIN),
+                        'user' => $user->hasRole(User::USER_DEFAULT),
+                    ]
+                ] : null;
             }
         ];
     }

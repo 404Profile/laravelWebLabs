@@ -22,6 +22,9 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    const USER_ADMIN = 1;
+    const USER_DEFAULT = 0;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -70,5 +73,10 @@ class User extends Authenticatable
     public function testAnswer()
     {
         return $this->belongsTo(TestAnswer::class);
+    }
+
+    public function hasRole($role): bool
+    {
+        return $this->role === $role;
     }
 }

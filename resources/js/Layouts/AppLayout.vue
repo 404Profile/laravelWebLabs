@@ -58,19 +58,19 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('photos.index')" :active="route().current('photos.*')">
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('photos.index')" :active="route().current('photos.*')">
                                     Photos
                                 </NavLink>
-                                <NavLink :href="route('interests.index')" :active="route().current('interests.*')">
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('interests.index')" :active="route().current('interests.*')">
                                     Interests
                                 </NavLink>
                                 <NavLink :href="route('test.index')" :active="route().current('test.*')">
                                     Test
                                 </NavLink>
-                                <NavLink :href="route('comments.index')" :active="route().current('comments.*')">
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('comments.index')" :active="route().current('comments.*')">
                                     Comments
                                 </NavLink>
-                                <NavLink :href="route('posts.index')" :active="route().current('posts.*')">
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('posts.index')" :active="route().current('posts.*')">
                                     Posts
                                 </NavLink>
                             </div>
