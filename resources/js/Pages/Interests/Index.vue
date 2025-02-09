@@ -23,9 +23,10 @@ const form = useForm({
 const createInterest = () => {
     form.post(route('interests.store'), {
         preserveScroll: true,
+        onSuccess: () => {
+            displayingModal.value = false;
+        },
     });
-
-    displayingModal.value = false;
 }
 
 const deleteInterest = (id) => {

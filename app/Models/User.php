@@ -66,4 +66,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function testAnswer()
+    {
+        return $this->belongsTo(TestAnswer::class);
+    }
 }

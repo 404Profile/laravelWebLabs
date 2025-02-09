@@ -22,6 +22,8 @@
     },
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
-        "@vueuse/core": "^12.5.0"
+        "@vueuse/core": "^12.5.0",
+        "papaparse": "^5.5.2",
+        "xlsx": "^0.18.5"
     }
 }
