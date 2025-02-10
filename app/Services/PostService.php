@@ -24,6 +24,13 @@ class PostService
         $post->save();
     }
 
+    public function updatePost(Request $request, Post $post)
+    {
+        $post->title = $request['title'];
+        $post->body = $request['body'];
+        $post->update();
+    }
+
     public function deletePost(Post $post): void
     {
         Storage::disk('public')->delete($post->photo_path);

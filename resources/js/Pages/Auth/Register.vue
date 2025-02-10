@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import {Head, Link, useForm} from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {ref} from "vue";
 
 const form = useForm({
     name: '',
@@ -19,6 +20,21 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
+    });
+};
+
+const isRegisteredUser = ref(false);
+
+const checkRegisteredUser = () => {
+    isRegisteredUser.value = false;
+    axios.post(route('checkRegisteredUser'), {
+        email: form.email,
+    }).then(response => {
+        console.log(response.data)
+        isRegisteredUser.value = !!response.data.exists;
+    })
+    .catch(error => {
+        console.error('Error checking email:', error);
     });
 };
 </script>
@@ -55,7 +71,11 @@ const submit = () => {
                     class="mt-1 block w-full"
                     required
                     autocomplete="username"
+                    @focusout="checkRegisteredUser"
                 />
+                <p v-if="isRegisteredUser" class="text-sm text-red-600 dark:text-red-400">
+                    The email address is busy
+                </p>
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 

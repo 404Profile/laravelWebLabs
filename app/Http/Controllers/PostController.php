@@ -17,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::query()->with('user')->orderByDesc('id')->paginate(9);
+        $posts = Post::query()->with(['user', 'comment'])->orderByDesc('id')->paginate(9);
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
@@ -63,9 +63,11 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post, PostService $postService)
     {
-        //
+        $request->validated();
+        $postService->updatePost($request, $post);
+        return Redirect::back()->with('success', 'Post updated');
     }
 
     /**

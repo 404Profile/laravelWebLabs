@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import {Head, Link, router, useForm} from '@inertiajs/vue3';
 import Pagination from "@/Components/Custom/Pagination.vue";
 import {ref} from "vue";
 import {
@@ -9,9 +9,16 @@ import {
     DialogPanel,
     DialogTitle,
 } from '@headlessui/vue'
+import InputError from "@/Components/InputError.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
 
 const props = defineProps({
     posts: Object,
+})
+
+const form = useForm({
+    body: '',
 })
 
 const currentPost = ref(null)
@@ -25,6 +32,13 @@ const closeModal = () => {
 const openModal = (el) => {
     currentPost.value = el;
     isOpen.value = true
+}
+
+const createComment = (id) => {
+    router.post(route('postComment.store'), {
+        postId: id,
+        body: form.body,
+    })
 }
 </script>
 
@@ -137,6 +151,42 @@ const openModal = (el) => {
                                     <p class="text-sm text-gray-500">
                                         {{ currentPost.body }}
                                     </p>
+                                </div>
+
+                                <div v-if="$page.props.auth.user" class="my-4">
+                                    <p>Write Comment on this post:</p>
+                                    <div class="col-span-6 sm:col-span-4">
+                                        <InputLabel for="email" value="Body" />
+                                        <textarea
+                                            id="body"
+                                            v-model="form.body"
+                                            type="text"
+                                            class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                            required
+                                            autofocus
+                                            autocomplete="body"
+                                        />
+                                        <InputError class="mt-2" :message="form.errors.body" />
+                                    </div>
+
+                                    <div class="flex justify-end py-2">
+                                        <button @click="createComment(currentPost.id)" class="relative grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2 rounded-lg gap-1.5 px-3 py-1.5 text-sm inline-grid shadow-sm bg-amber-600 text-white hover:bg-amber-500 focus-visible:ring-amber-500/50 dark:bg-amber-500 dark:hover:bg-amber-400 dark:focus-visible:ring-amber-400/50">
+                                            Write Comment
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="py-4">
+                                    <div v-for="(comment, index) in currentPost.comments" :key="index">
+                                        <div class="border-b border-gray-300">
+                                            <div>
+                                                Author: {{ comment.user.name }}
+                                            </div>
+                                            <div>
+                                                Text: "{{ comment.body }}"
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="mt-4">

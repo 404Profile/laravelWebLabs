@@ -9,7 +9,7 @@ class WelcomeController extends Controller
 {
     public function welcome()
     {
-        $posts = Post::query()->with('user')->orderByDesc('id')->paginate(9);
+        $posts = Post::query()->with(['user', 'comments.user'])->orderByDesc('id')->paginate(9);
 
         return Inertia::render('Welcome', [
             'posts' => $posts,

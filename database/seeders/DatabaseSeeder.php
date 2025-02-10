@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Interest;
 use App\Models\Photo;
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -31,5 +32,6 @@ class DatabaseSeeder extends Seeder
 
         Comment::factory(30)->create();
         Post::factory(30)->create();
+        PostComment::factory(300)->create();
     }
 }

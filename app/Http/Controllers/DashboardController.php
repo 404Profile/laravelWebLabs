@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $visits = Visit::query()->paginate(10);
+        $visits = Visit::query()->orderByDesc('id')->paginate(10);
 
         return Inertia::render('Dashboard', [
             'visits' => $visits,
