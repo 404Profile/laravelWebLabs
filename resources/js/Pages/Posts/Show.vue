@@ -81,6 +81,20 @@ const updatePost = () => {
                             {{ post.body }}
                         </div>
                     </div>
+
+                    <div class="p-6">
+                        <div v-for="(comment, index) in post.comments" :key="index">
+                            <div class="border-b border-gray-300">
+                                <div>
+                                    Author: {{ comment.user.name }}
+                                </div>
+                                <div>
+                                    Text: "{{ comment.body }}"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
