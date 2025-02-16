@@ -1,6 +1,18 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {useForm} from "@inertiajs/vue3";
+import {
+    TransitionRoot,
+    TransitionChild,
+    Dialog,
+    DialogPanel,
+    DialogTitle,
+} from '@headlessui/vue'
+import {ref} from "vue";
+
+const props = defineProps({
+    testAnswers: Object,
+})
 
 const form = useForm({
     name: '',
@@ -19,6 +31,21 @@ const submitForm = () => {
     form.post(route('test.validate'), {
         preserveScroll: true,
     });
+
+    form.reset();
+}
+
+const parseElementEcosystem = (el) => {
+    return JSON.parse(el);
+}
+
+const isOpen = ref(false)
+
+function closeModal() {
+    isOpen.value = false
+}
+function openModal() {
+    isOpen.value = true
 }
 </script>
 
@@ -135,6 +162,14 @@ const submitForm = () => {
                         </div>
 
                         <div class="mt-6 flex items-center justify-end gap-x-6 px-6 pb-4">
+                            <button
+                                type="button"
+                                @click="openModal"
+                                class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+                            >
+                                My answers
+                            </button>
+
                             <button type="reset" @click="reset"
                                     class="ml-4 relative grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2 rounded-lg gap-1.5 px-3 py-2 text-sm inline-grid shadow-sm bg-white text-gray-950 hover:bg-gray-50 ring-1 ring-gray-950/10">
                                 Очистить
@@ -150,5 +185,84 @@ const submitForm = () => {
                 </div>
             </div>
         </div>
+
+        <TransitionRoot appear :show="isOpen" as="template">
+            <Dialog as="div" @close="closeModal" class="relative z-10">
+                <TransitionChild
+                    as="template"
+                    enter="duration-300 ease-out"
+                    enter-from="opacity-0"
+                    enter-to="opacity-100"
+                    leave="duration-200 ease-in"
+                    leave-from="opacity-100"
+                    leave-to="opacity-0"
+                >
+                    <div class="fixed inset-0 bg-black/25" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 overflow-y-auto">
+                    <div
+                        class="flex min-h-full items-center justify-center p-4 text-center"
+                    >
+                        <TransitionChild
+                            as="template"
+                            enter="duration-300 ease-out"
+                            enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100"
+                            leave="duration-200 ease-in"
+                            leave-from="opacity-100 scale-100"
+                            leave-to="opacity-0 scale-95"
+                        >
+                            <DialogPanel
+                                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                            >
+                                <DialogTitle
+                                    as="h3"
+                                    class="text-lg font-medium leading-6 text-gray-900"
+                                >
+                                    Your answers on this test
+                                </DialogTitle>
+                                <div class="mt-2">
+                                    <div v-for="(answer, index) in testAnswers" :key="index" class="pb-4">
+                                        <p>Attempt №{{ index+1 }} | Date - {{ Date(answer.created_at) }}</p>
+                                        <div>
+                                            <p>Question 1: Какой из перечисленных факторов НЕ является биотическим элементом экосистемы?</p>
+                                            <p>Correct answer: Вода</p>
+                                            <p>Your answer: {{ parseElementEcosystem(answer.data).elementEcosystem[0] }}</p>
+                                            <p>Correct: {{ parseElementEcosystem(answer.data).elementEcosystem[1] ? 'Yes' : 'No' }}</p>
+                                        </div>
+
+                                        <div>
+                                            <p>Question 2: Укажите организм, занимающий вершину пищевой пирамиды</p>
+                                            <p>Correct answer: Человек/человек</p>
+                                            <p>Your answer: {{ parseElementEcosystem(answer.data).eating[0] }}</p>
+                                            <p>Correct: {{ parseElementEcosystem(answer.data).eating[1] ? 'Yes' : 'No' }}</p>
+                                        </div>
+
+                                        <div>
+                                            <p>Question 3: Какие из перечисленных видов относятся к хищникам?</p>
+                                            <p>Correct answer: Волк и медведь</p>
+                                            <p>Your answer: {{ parseElementEcosystem(answer.data).wolf[0] }} {{ parseElementEcosystem(answer.data).rabbit[0] }} {{ parseElementEcosystem(answer.data).bear[0] }}</p>
+                                            <p>Correct: {{ parseElementEcosystem(answer.data).wolf[1] && parseElementEcosystem(answer.data).rabbit[1] && parseElementEcosystem(answer.data).bear[1] ? 'Yes' : 'No' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button
+                                        type="button"
+                                        class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                        @click="closeModal"
+                                    >
+                                        Got it, thanks!
+                                    </button>
+                                </div>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </div>
+            </Dialog>
+        </TransitionRoot>
+
     </AppLayout>
 </template>

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Actions\ValidateTestAction;
+use App\Models\TestAnswer;
+use App\Services\TestService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -14,12 +17,16 @@ class TestController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Test/Index');
+        $testAnswers = TestAnswer::query()->where('user_id', Auth::id())->get();
+
+        return Inertia::render('Test/Index', [
+            'testAnswers' => $testAnswers,
+        ]);
     }
 
-    public function validateTest(Request $request, ValidateTestAction $validateTestAction)
+    public function validateTest(Request $request, TestService $testService)
     {
-        $validate = $validateTestAction->validateTest($request);
+        $validate = $testService->validateTest($request);
 
         if ($validate) {
             return Redirect::back()->with('success', 'Test sent');

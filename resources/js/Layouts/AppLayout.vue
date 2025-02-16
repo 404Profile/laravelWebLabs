@@ -48,7 +48,7 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('welcome')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
@@ -58,14 +58,20 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('photos.index')" :active="route().current('photos.*')">
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('photos.index')" :active="route().current('photos.*')">
                                     Photos
                                 </NavLink>
-                                <NavLink :href="route('interests.index')" :active="route().current('interests.*')">
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('interests.index')" :active="route().current('interests.*')">
                                     Interests
                                 </NavLink>
                                 <NavLink :href="route('test.index')" :active="route().current('test.*')">
                                     Test
+                                </NavLink>
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('comments.index')" :active="route().current('comments.*')">
+                                    Comments
+                                </NavLink>
+                                <NavLink v-if="$page.props.authUser.hasRole.admin" :href="route('posts.index')" :active="route().current('posts.*')">
+                                    Posts
                                 </NavLink>
                             </div>
                         </div>
