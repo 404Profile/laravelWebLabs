@@ -17,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::query()->with(['user', 'comment'])->orderByDesc('id')->paginate(9);
+        $posts = Post::query()->with(['user', 'comments'])->orderByDesc('id')->paginate(9);
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
@@ -47,6 +47,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->load('comments.user');
+
         return Inertia::render('Posts/Show', [
             'post' => $post,
         ]);
